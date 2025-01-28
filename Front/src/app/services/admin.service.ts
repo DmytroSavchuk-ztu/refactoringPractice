@@ -244,7 +244,7 @@ export class AdminService {
     return this.http.patch<any>(urls.news.changeNews + '/' + id, changes)
   }
 
-  addSection(id: any, section: any): Observable<any> {
+  addSection(id: number, section: any): Observable<any> {
     return this.http.post<any>(urls.news.addSection + '/' + id, section)
   }
 
