@@ -13,6 +13,13 @@ interface DecodedToken {
 
   [key: string]: any;
 }
+interface StateMapping {
+  [key: string]: {
+    state: string;
+    watching: string;
+    form?: string;
+  };
+}
 
 
 @Component({
@@ -167,6 +174,7 @@ export class AdminPageComponent implements OnInit {
   partnerForm!: FormGroup;
   addressForm!: FormGroup
   // vars
+  [key: string]: any;
   crews: any;
   singleCrew: any;
   projects: any;
@@ -237,15 +245,15 @@ export class AdminPageComponent implements OnInit {
 
   //get functions
 
-  getData(type: string, serviceMethod: any, id: number | null = null, scrollTop: boolean = false) {
+  getData(type: keyof StateMapping, serviceMethod: any, id: number | null = null, scrollTop: boolean = false) {
     serviceMethod(id)
       .pipe(
         tap((response: any) => {
           // Reset all states to initial values
           this.resetAllStates();
 
-          // State-specific configurations
-          const stateMapping = {
+          // Define state mappings
+          const stateMapping: StateMapping = {
             buttons: { state: 'buttons', watching: 'watchingButtons', form: 'createButtonForm' },
             crews: { state: 'crews', watching: 'watchingCrew' },
             projects: { state: 'projects', watching: 'watchingProjects' },
@@ -261,6 +269,7 @@ export class AdminPageComponent implements OnInit {
             singleNews: { state: 'singleNews', watching: 'watchingNews' }
           };
 
+          // Access the state and watching values from the stateMapping
           const { state, watching, form } = stateMapping[type] || {};
 
           if (state) {
@@ -276,7 +285,7 @@ export class AdminPageComponent implements OnInit {
           }
 
           if (id) {
-            this[`single${type.charAt(0).toUpperCase() + type.slice(1)}`] = response;
+            this[`single${(type as string).charAt(0).toUpperCase() + (type as string).slice(1)}`] = response;
           }
 
           if (scrollTop) {
@@ -289,6 +298,7 @@ export class AdminPageComponent implements OnInit {
       )
       .subscribe();
   }
+
   resetAllStates() {
     this.watchingCrew = false;
     this.watchingProjects = false;
